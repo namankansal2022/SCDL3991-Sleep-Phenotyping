@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.ipynb_checkpoints/
+*.egg-info/
+
+# Virtual environments
+venv/
+env/
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Data — never commit MESA data
+data/raw/
+data/physiological/
+data/processed/
+*.edf
+*.EDF
+
+# Large outputs
+*.h5
+*.hdf5
+*.npy
+*.npz
+*.pkl
+*.pickle
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local config
+src/config_local.py
