@@ -21,30 +21,30 @@ Phase 1 (separate repository) established a six-algorithm clustering baseline on
 
 ### Phase 1 reference
 
-Earlier work on the Sleep Health & Lifestyle dataset is archived at:
+Earlier work on the Sleep Health and Lifestyle dataset is archived at:
 https://github.com/namankansal2022/SCDL3991-Clustering-Analysis
 
 ---
 
 ## Repository Structure
-SCDL3991-Sleep-Phenotyping/
-├── notebooks/                    Jupyter notebooks, numbered by stage
-├── src/                          Reusable Python modules
-│   ├── config.py                 Paths and constants
-│   ├── preprocessing.py          ECG signal preprocessing pipeline
-│   ├── features.py               HRV feature extraction
-│   ├── clustering.py             Clustering algorithms
-│   └── evaluation.py             Internal and external metrics
-├── data/tabular/                 Small Kaggle dataset (Phase 1 baseline rerun)
-├── results/                      Small CSVs of experimental results
-├── figures/                      PNG/PDF outputs
-├── docs/                         Project documentation
-│   ├── dataset_reference.md      MESA dataset structure and contents
-│   ├── preprocessing_plan.md     ECG/HRV pipeline specification
-│   └── novelty_directions.md     Candidate directions for methodological contribution
-├── README.md
-├── requirements.txt
-└── .gitignore
+
+| Folder / File | Description |
+|---|---|
+| `notebooks/` | Jupyter notebooks, numbered by stage |
+| `src/` | Reusable Python modules |
+| `src/config.py` | Paths and constants (SSD data root, sampling rates, filter settings) |
+| `src/preprocessing.py` | ECG signal preprocessing pipeline (filter, R-peaks, epochs) |
+| `src/features.py` | HRV feature extraction (11 time/frequency/nonlinear features) |
+| `src/clustering.py` | Six clustering algorithms with uniform interface |
+| `src/evaluation.py` | Internal metrics (Silhouette, DB, CH) + external metrics (NMI, AMI, ARI, F-score) |
+| `src/plotting.py` | Reusable plotting functions (PCA, bar charts, heatmaps, boxplots) |
+| `data/tabular/` | Small Kaggle dataset for Phase 1 baseline rerun |
+| `results/` | Small CSVs of experimental results |
+| `figures/` | PNG/PDF outputs from analysis |
+| `docs/` | Project documentation (see below) |
+| `README.md` | This file |
+| `requirements.txt` | Python dependencies for reproducibility |
+| `.gitignore` | Files excluded from version control |
 
 The MESA dataset itself lives on an external SSD (not in this repo), with paths configured in `src/config.py`.
 
@@ -54,9 +54,11 @@ The MESA dataset itself lives on an external SSD (not in this repo), with paths 
 
 The `docs/` folder contains the design and reference documents for the project:
 
-- **dataset_reference.md** — full description of the MESA Sleep Study: 2,056 subjects, seven physiological modalities, file formats, annotations, NSRR pre-computed variables, citation requirements, and open questions.
-- **preprocessing_plan.md** — specification of the ECG/HRV preprocessing pipeline. Adapted from Ma et al. (2026), with explicit notes on what is adopted, what is deliberately changed (60 Hz notch for US data, ECG-specific bandpass), and what extends the original framework.
-- **novelty_directions.md** — four candidate directions for a methodological contribution (multi-modal fusion, semi-supervised clustering, adaptive density peak clustering, deep representation learning). Discussion document for supervisor meeting.
+| Document | Description |
+|---|---|
+| `dataset_reference.md` | Full description of the MESA Sleep Study: 2,056 subjects, seven physiological modalities, file formats, annotations, NSRR pre-computed variables, citation requirements, and open questions |
+| `preprocessing_plan.md` | Specification of the ECG/HRV preprocessing pipeline, adapted from Ma et al. (2026), with explicit notes on what is adopted, what is deliberately changed (60 Hz notch for US data, ECG-specific bandpass), and what extends the original framework |
+| `novelty_directions.md` | Four candidate directions for a methodological contribution (multi-modal fusion, semi-supervised clustering, adaptive density peak clustering, deep representation learning). Discussion document for supervisor meeting |
 
 ---
 
@@ -78,8 +80,8 @@ pip install -r requirements.txt
 **Source:** MESA Sleep Study, distributed via the National Sleep Research Resource (NSRR) at https://sleepdata.org/datasets/mesa
 
 **Required citations** (when publishing or submitting work using this dataset):
-- Zhang GQ, Cui L, Mueller R, et al. (2018). The National Sleep Research Resource: towards a sleep data commons. *J Am Med Inform Assoc*, 25(10):1351–1358.
-- Chen X, Wang R, Zee P, et al. (2015). Racial/Ethnic Differences in Sleep Disturbances: The Multi-Ethnic Study of Atherosclerosis (MESA). *Sleep*, 38(6):877–88.
+- Zhang GQ, Cui L, Mueller R, et al. (2018). The National Sleep Research Resource: towards a sleep data commons. *J Am Med Inform Assoc*, 25(10):1351-1358.
+- Chen X, Wang R, Zee P, et al. (2015). Racial/Ethnic Differences in Sleep Disturbances: The Multi-Ethnic Study of Atherosclerosis (MESA). *Sleep*, 38(6):877-88.
 
 Detailed dataset description: see `docs/dataset_reference.md`.
 
@@ -92,10 +94,14 @@ Detailed dataset description: see `docs/dataset_reference.md`.
 - [x] Preprocessing plan document
 - [x] Methodological novelty discussion document
 - [x] Module skeletons with function signatures and docstrings
+- [x] Clustering module implemented and tested (6 algorithms)
+- [x] Evaluation module implemented and tested (10 metrics)
+- [x] Plotting module implemented (5 reusable functions)
+- [x] Phase 1 baseline rerun with new external metrics (results in `results/`)
 - [ ] MESA dataset acquired (in progress — in-person transfer scheduled)
 - [ ] Preprocessing pipeline implemented and validated on a sample of subjects
 - [ ] HRV features extracted across the sample
-- [ ] Six clustering algorithms applied with internal and external metrics
+- [ ] Six clustering algorithms applied to MESA ECG/HRV features
 - [ ] Cross-tabulation against AASM ground-truth sleep stages
 - [ ] Methodological direction selected and prototyped
 
