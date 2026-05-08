@@ -2,7 +2,7 @@
 Project configuration — paths, constants, and shared settings.
 
 Code lives on the laptop (~/Documents/SCDL3991-Sleep-Phenotyping/),
-data lives on an external SSD (/Volumes/SSD/SCDL3991-data/).
+data lives on an external SSD (/Volumes/Expansion/SCDL3991-data/).
 
 If the SSD mount point ever changes, update DATA_ROOT below.
 """
@@ -13,7 +13,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 # Data root on the external SSD
-DATA_ROOT = Path("/Volumes/SSD/SCDL3991-data")
+DATA_ROOT = Path("/Volumes/Expansion/SCDL3991-data")
 
 # SSD subdirectories
 RAW_DIR = DATA_ROOT / "raw"
@@ -52,3 +52,21 @@ EMG_BANDPASS_HZ = (10.0, 100.0)
 
 # AASM sleep stage labels in canonical order
 SLEEP_STAGES = ["W", "N1", "N2", "N3", "REM"]
+
+# === CONFIRMED FROM ACTUAL MESA DATA (May 2026) ===
+
+# ECG channel is labelled "EKG" in MESA EDFs (not "ECG")
+ECG_CHANNEL_NAME = "EKG"
+
+# MESA polysomnography directory structure
+MESA_EDF_DIR = DATA_ROOT / "raw" / "mesa" / "polysomnography" / "edfs"
+MESA_XML_DIR = DATA_ROOT / "raw" / "mesa" / "polysomnography" / "annotations-events-nsrr"
+
+# Sleep stage label mapping from MESA XML to AASM convention
+MESA_STAGE_MAP = {
+    "Wake|0": "W",
+    "Stage 1 sleep|1": "N1",
+    "Stage 2 sleep|2": "N2",
+    "Stage 3 sleep|3": "N3",
+    "REM sleep|5": "REM",
+}
