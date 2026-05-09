@@ -1,8 +1,11 @@
 # SCDL3991 — Sleep Phenotyping via Multi-Modal Physiological Clustering
 
 **Researcher:** Naman Kansal
+
 **Supervisors:** Professor Wei Chen, Dr Jie Yang
+
 **Institution:** School of Biomedical Engineering, The University of Sydney
+
 **Phase:** 2 — Multi-modal physiological signal analysis (in progress)
 
 ---
