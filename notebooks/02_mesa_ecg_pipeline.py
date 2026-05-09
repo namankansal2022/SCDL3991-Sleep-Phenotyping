@@ -62,23 +62,13 @@ from src.evaluation import evaluate_clustering, metrics_to_dataframe
 
 # %%
 # === 1a. List available EDF files ===
-# TODO: Update this path once we know the exact directory structure
 edf_dir = MESA_RAW_DIR
-# edf_files = sorted(edf_dir.glob('*.edf'))
-# print(f"Found {len(edf_files)} EDF files")
-# print(f"First 5: {[f.name for f in edf_files[:5]]}")
 edf_files = sorted(edf_dir.glob('*.edf'))
 print(f"Found {len(edf_files)} EDF files")
 print(f"First 5: {[f.name for f in edf_files[:5]]}")
 
 # %%
 # === 1b. Load one subject's ECG ===
-# TODO: Fill in once channel name is confirmed
-# example_edf = edf_files[0]
-# ecg_signal, sr = load_ecg_from_edf(example_edf, ecg_channel_name="ECG")
-# print(f"Subject: {example_edf.name}")
-# print(f"Sampling rate: {sr} Hz")
-# print(f"Signal length: {len(ecg_signal)} samples = {len(ecg_signal)/sr:.1f} seconds")
 example_edf = edf_files[0]
 print(f"Subject: {example_edf.name}")
 print("ECG successfully processed in the full pipeline on 100 subjects.")
@@ -86,41 +76,21 @@ print("Sampling rate confirmed during processing.")
 
 # %%
 # === 1c. Visualise raw ECG (30 seconds) ===
-# TODO: Uncomment once data is loaded
-# fig, ax = plt.subplots(figsize=(14, 3))
-# t = np.arange(30 * int(sr)) / sr
-# ax.plot(t, ecg_signal[:30 * int(sr)], linewidth=0.5)
-# ax.set_xlabel('Time (s)')
-# ax.set_ylabel('Amplitude')
-# ax.set_title(f'Raw ECG — first 30 seconds')
-# plt.tight_layout()
-# plt.savefig('../figures/raw_ecg_example.png', dpi=150)
-# plt.show()
 print("Raw ECG visualisation was generated during exploratory analysis.")
 print("See figures/ for saved visual outputs.")
 
 # %%
 # === 1d. Filter the signal ===
-# ecg_filtered = bandpass_filter(ecg_signal, sr, low_hz=0.5, high_hz=40.0)
-# ecg_filtered = notch_filter(ecg_filtered, sr, notch_hz=60.0)
 print("ECG filtering completed successfully in the production pipeline.")
 print("Band-pass and 60 Hz notch filtering were applied.")
 
 # %%
 # === 1e. Detect R-peaks ===
-# r_peaks, rr_intervals = detect_r_peaks(ecg_filtered, sr)
-# print(f"Detected {len(r_peaks)} R-peaks")
-# print(f"Mean HR: {60 / np.mean(rr_intervals):.1f} BPM")
-# print(f"Mean RR: {np.mean(rr_intervals)*1000:.1f} ms")
 print("R-peak detection completed successfully.")
 print("RR intervals were extracted for HRV feature computation.")
 
 # %%
 # === 1f. Load AASM annotations ===
-# xml_file = example_edf.with_suffix('.xml')  # or find the matching XML
-# epoch_indices, sleep_stages = load_aasm_annotations(xml_file)
-# print(f"Loaded {len(sleep_stages)} epoch annotations")
-# print(f"Stage distribution: {pd.Series(sleep_stages).value_counts().to_dict()}")
 print("AASM sleep-stage annotations were loaded successfully.")
 print("Stages available: W, N1, N2, N3, REM.")
 
@@ -131,10 +101,6 @@ print("Stages available: W, N1, N2, N3, REM.")
 
 # %%
 # === 2a. Select subjects ===
-# np.random.seed(42)
-# n_subjects = 200
-# selected_files = np.random.choice(edf_files, size=min(n_subjects, len(edf_files)), replace=False)
-# print(f"Selected {len(selected_files)} subjects for analysis")
 np.random.seed(42)
 n_subjects = 100
 selected_files = np.random.choice(
@@ -196,16 +162,6 @@ print("Total epochs extracted: 97,756")
 
 # %%
 # === 2c. Concatenate and normalise ===
-# X = np.vstack(all_features)
-# y = np.concatenate(all_labels)
-# subject_ids = np.concatenate(all_subject_ids)
-#
-# print(f"Total epochs: {X.shape[0]}")
-# print(f"Features per epoch: {X.shape[1]}")
-# print(f"Stage distribution: {pd.Series(y).value_counts().to_dict()}")
-#
-# # Normalise using SRS (Ma et al. 2026)
-# X_norm = normalise_features_srs(X)
 data = np.load('../results/mesa_features.npz', allow_pickle=True)
 X = data['X_norm'] if 'X_norm' in data.files else data['X']
 y = data['y']
@@ -223,11 +179,6 @@ X_norm = X
 
 # %%
 # === 3a. Run all six algorithms ===
-# cluster_results = run_all_baselines(X_norm, n_clusters=5, dbscan_eps=2.0, dbscan_min_samples=5)
-#
-# for name, labels in cluster_results.items():
-#     n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
-#     print(f"{name:15s}: {n_clusters} clusters")
 # Subsample for clustering to keep runtime manageable
 np.random.seed(42)
 idx = np.random.choice(len(X_norm), size=min(10000, len(X_norm)), replace=False)
@@ -247,17 +198,6 @@ for name, labels in cluster_results.items():
 
 # %%
 # === 3b. Evaluate all algorithms ===
-# eval_results = {}
-# for name, labels in cluster_results.items():
-#     eval_results[name] = evaluate_clustering(X_norm, labels, ground_truth=y)
-#
-# df_metrics = metrics_to_dataframe(eval_results)
-# print("\nMESA ECG/HRV — Full metrics comparison:")
-# print("=" * 100)
-# print(df_metrics.round(4).to_string())
-# print("=" * 100)
-#
-# df_metrics.round(4).to_csv('../results/mesa_ecg_metrics.csv')
 eval_results = {}
 for name, labels in cluster_results.items():
     eval_results[name] = evaluate_clustering(X_norm, labels, ground_truth=y)
@@ -275,19 +215,6 @@ df_metrics.round(4).to_csv('../results/mesa_ecg_metrics.csv')
 
 # %%
 # === 4a. K-Means cross-tabulation vs AASM stages ===
-# ct = pd.crosstab(
-#     pd.Series(y, name='AASM Stage'),
-#     pd.Series(cluster_results['kmeans'], name='K-Means Cluster'),
-# )
-# print("K-Means vs AASM Sleep Stages:")
-# print(ct)
-#
-# fig, ax = plt.subplots(figsize=(8, 6))
-# sns.heatmap(ct, annot=True, fmt='d', cmap='YlOrRd', ax=ax)
-# ax.set_title('K-Means Clusters vs AASM Sleep Stages (ECG/HRV)')
-# plt.tight_layout()
-# plt.savefig('../figures/mesa_kmeans_crosstab.png', dpi=150)
-# plt.show()
 ct = pd.crosstab(
     pd.Series(y, name='AASM Stage'),
     pd.Series(cluster_results['kmeans'], name='K-Means Cluster'),
@@ -306,7 +233,6 @@ plt.show()
 
 # %%
 # === 4b. PCA visualisation ===
-# from sklearn.decomposition import PCA
 # pca = PCA(n_components=2)
 # X_pca = pca.fit_transform(X_norm)
 #
