@@ -110,12 +110,14 @@ heart rate variability (HRV) features extracted from the MESA Sleep dataset.
 
 ### Methods
 
-The following baseline clustering algorithms were applied:
+Six baseline clustering algorithms were applied, including:
 
 1. K-Means
 2. Agglomerative (Hierarchical) Clustering
 3. DBSCAN
 4. Gaussian Mixture Models (GMM)
+5. Spectral Clustering
+6. Birch
 
 Evaluation included:
 
