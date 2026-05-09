@@ -233,32 +233,6 @@ plt.show()
 
 # %%
 # === 4b. PCA visualisation ===
-# pca = PCA(n_components=2)
-# X_pca = pca.fit_transform(X_norm)
-#
-# fig, axes = plt.subplots(1, 2, figsize=(16, 6))
-#
-# # Left: coloured by AASM ground truth
-# for stage in ['W', 'N1', 'N2', 'N3', 'REM']:
-#     mask = y == stage
-#     axes[0].scatter(X_pca[mask, 0], X_pca[mask, 1], label=stage, alpha=0.4, s=10)
-# axes[0].set_title('PCA — AASM Ground Truth')
-# axes[0].legend()
-#
-# # Right: coloured by K-Means clusters
-# for k in sorted(set(cluster_results['kmeans'])):
-#     mask = cluster_results['kmeans'] == k
-#     axes[1].scatter(X_pca[mask, 0], X_pca[mask, 1], label=f'Cluster {k}', alpha=0.4, s=10)
-# axes[1].set_title('PCA — K-Means Clusters')
-# axes[1].legend()
-#
-# for ax in axes:
-#     ax.set_xlabel(f'PC1 ({pca.explained_variance_ratio_[0]:.1%})')
-#     ax.set_ylabel(f'PC2 ({pca.explained_variance_ratio_[1]:.1%})')
-#
-# plt.tight_layout()
-# plt.savefig('../figures/mesa_pca_comparison.png', dpi=150)
-# plt.show()
 pca = PCA(n_components=2)
 X_pca = pca.fit_transform(X_norm)
 
