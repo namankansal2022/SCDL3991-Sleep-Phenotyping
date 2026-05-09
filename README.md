@@ -98,13 +98,15 @@ Detailed dataset description: see `docs/dataset_reference.md`.
 - [x] Evaluation module implemented and tested (10 metrics)
 - [x] Plotting module implemented (5 reusable functions)
 - [x] Phase 1 baseline rerun with new external metrics (results in `results/`)
-- [ ] MESA dataset acquired (in progress — in-person transfer scheduled)
-- [ ] Preprocessing pipeline implemented and validated on a sample of subjects
-- [ ] HRV features extracted across the sample
-- [ ] Six clustering algorithms applied to MESA ECG/HRV features
-- [ ] Cross-tabulation against AASM ground-truth sleep stages
+- [x] MESA dataset acquired and configured on external SSD
+- [x] Preprocessing pipeline implemented and validated on 100 subjects
+- [x] HRV features extracted across 97,756 epochs
+- [x] Six clustering algorithms applied to MESA ECG/HRV features
+- [x] Cross-tabulation against AASM ground-truth sleep stages
+- [x] Results and figures generated and committed to GitHub
 - [ ] Methodological direction selected and prototyped
 
 ---
 
 *Last updated: May 2026*
+
