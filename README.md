@@ -90,6 +90,91 @@ Detailed dataset description: see `docs/dataset_reference.md`.
 
 ---
 
+
+## MESA ECG/HRV Baseline Summary (May 2026)
+
+### Objective
+
+Validate the complete Phase 2 pipeline on one physiological modality (ECG) using
+heart rate variability (HRV) features extracted from the MESA Sleep dataset.
+
+### Dataset and Experimental Setup
+
+- Dataset: MESA Sleep Study (NSRR)
+- Modality: ECG only
+- Features: 7 time-domain HRV features
+- Subjects processed: 100
+- Total labelled epochs extracted: 97,756
+- Sleep stages: W, N1, N2, N3, REM
+- Clustering sample used for evaluation: 10,000 epochs
+
+### Methods
+
+The following baseline clustering algorithms were applied:
+
+1. K-Means
+2. Agglomerative (Hierarchical) Clustering
+3. DBSCAN
+4. Gaussian Mixture Models (GMM)
+
+Evaluation included:
+
+- Internal metrics: Silhouette, Davies-Bouldin, Calinski-Harabasz
+- External metrics: ARI, AMI, NMI, Homogeneity, Completeness, V-measure, F-score
+
+### Key Results
+
+- K-Means achieved the strongest overall internal cluster quality.
+- All external agreement metrics (ARI, AMI, NMI) were close to zero.
+- Cross-tabulation showed that each cluster contained a mixture of sleep stages.
+- HRV features alone do not recover the five AASM sleep stages reliably.
+
+### Scientific Interpretation
+
+These findings are consistent with the sleep literature:
+
+- ECG/HRV captures broad autonomic changes across sleep.
+- HRV is useful for distinguishing sleep from wake and some REM/NREM differences.
+- HRV alone is insufficient for accurate five-stage sleep phenotyping.
+- EEG remains the most informative modality for fine-grained sleep staging.
+
+### Research Implication
+
+The weak correspondence between HRV-based clusters and AASM labels provides a
+clear justification for methodological innovation, particularly:
+
+- Multi-modal fusion (ECG + EEG + SpO₂ + respiration)
+- Semi-supervised clustering
+- Adaptive Density Peak Clustering
+- Deep representation learning
+
+### Repository Outputs
+
+Results:
+- `results/mesa_features.npz`
+- `results/mesa_ecg_metrics.csv`
+- `results/mesa_kmeans_crosstab.csv`
+
+Figures:
+- `figures/mesa_pca_ground_truth.png`
+- `figures/mesa_pca_kmeans.png`
+- `figures/mesa_external_metrics.png`
+- `figures/mesa_kmeans_crosstab.png`
+- `figures/mesa_feature_distributions.png`
+
+Supporting documentation:
+- `docs/novelty_directions.md`
+
+### Conclusion
+
+The complete ECG/HRV pipeline has been successfully validated on real MESA
+polysomnography data. The baseline analysis demonstrates that ECG-derived HRV
+features contain meaningful physiological structure, but are insufficient on
+their own to reproduce the five canonical sleep stages. This establishes a
+strong foundation for the next phase of the project, focused on developing
+novel multi-modal clustering methods.
+
+
 ## Status
 
 - [x] Project scaffolding and environment setup
