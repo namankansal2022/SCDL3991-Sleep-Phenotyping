@@ -1,0 +1,4 @@
+,silhouette,davies_bouldin,calinski_harabasz,ari,ami,nmi,homogeneity,completeness,v_measure,f_score,accuracy
+KMeans,0.2551,1.8603,2308.7103,0.1113,0.0745,0.0745,0.0717,0.0777,0.0745,0.6592,0.6683
+Hierarchical,0.3766,1.8516,1721.0568,0.1616,0.2304,0.2305,0.184,0.3085,0.2305,0.6612,0.7057
+GMM_full,0.2346,3.5731,608.5314,0.0739,0.0522,0.0522,0.0462,0.06,0.0522,0.6104,0.6406
