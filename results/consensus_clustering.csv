@@ -1,0 +1,5 @@
+method,ari,accuracy,kappa
+Single DBSCAN2.0 (champion),0.3205,0.647,0.428
+Consensus-Spectral,0.0691,0.418,0.244
+Consensus-Hierarchical,0.0604,0.394,0.222
+Mean individual base clustering,0.13,0.4,0.24
