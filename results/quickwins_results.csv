@@ -1,0 +1,6 @@
+method,category,labels_pct,ari,accuracy,bal_acc,kappa
+Self-training (10% seed),semi-sup,10,0.4997,0.743,0.548,0.606
+Self-training (5% seed),semi-sup,5,0.4589,0.726,0.506,0.573
+LabelSpread rich (10%),semi-sup,10,0.4596,0.7,0.571,0.564
+Per-subject HMM (best balanced),unsup,0,0.1979,0.453,0.481,0.309
+Global DBSCAN2.0 (best unsup ARI),unsup,0,0.2816,0.617,0.328,0.396
