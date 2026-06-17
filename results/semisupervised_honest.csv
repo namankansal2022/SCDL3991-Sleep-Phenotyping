@@ -1,0 +1,8 @@
+method,labels_pct,ari,bal_acc,kappa,macro_f1
+"Random Forest (100% labels, upper bound)",100,0.6646,0.649,0.731,0.668
+Label Spreading (20% labels),20,0.4893,0.58,0.596,0.586
+Label Spreading (10% labels),10,0.4157,0.523,0.527,0.527
+Label Spreading (5% labels),5,0.374,0.493,0.485,0.498
+"LDA + GMM (10% labels, semi-sup clustering)",10,0.2956,0.418,0.356,0.389
+Unsupervised GMM + temporal (0% labels),0,0.1502,0.274,0.197,0.275
+Random baseline,0,0.0,0.2,0.0,0.1
