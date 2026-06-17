@@ -1,0 +1,8 @@
+method,labels_pct,ari,accuracy,bal_acc,kappa
+"Supervised RF (rich, 100% labels)",100,0.6669,0.822,0.656,0.73
+"LabelSpread rich (20% labels, nn=20)",20,0.5248,0.741,0.593,0.618
+"LabelSpread rich (10% labels, nn=20)",10,0.4596,0.7,0.571,0.564
+LabelSpread rich (5% labels),5,0.4118,0.667,0.548,0.521
+Unsupervised rich (DBSCAN+ctx+PCA),0,0.2811,0.617,0.328,0.395
+Unsupervised OLD (band powers),0,0.21,0.577,0.306,0.333
+Random baseline,0,0.0,0.2,0.2,0.0
