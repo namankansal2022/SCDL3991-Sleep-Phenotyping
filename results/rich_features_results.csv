@@ -1,0 +1,6 @@
+method,features,ari,nmi,accuracy,kappa
+Rich EEG + DBSCAN 2.0 + ctx + PCA20,39 rich EEG,0.2811,0.2325,0.617,0.395
+Rich EEG + DBSCAN 1.5 + ctx + PCA15,39 rich EEG,0.2681,0.2613,0.623,0.386
+Rich EEG + DBSCAN 2.0 + ctx + PCA15,39 rich EEG,0.2386,0.2092,0.597,0.372
+Rich EEG GMM (no temporal),39 rich EEG,0.1902,0.2403,0.437,0.228
+OLD band-power best,15 band powers,0.21,0.1842,0.577,0.333
