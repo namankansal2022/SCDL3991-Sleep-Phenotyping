@@ -1,0 +1,7 @@
+approach,ari,nmi,kappa,note
+PCA=15 + DBSCAN 2.0 + temporal ctx=3,0.21,0.1842,0.333,Best ARI overall
+PCA=10 + DBSCAN 1.5 + temporal ctx=3,0.2026,0.1761,0.327,Second best ARI
+GMM full + temporal ctx=5,0.1502,0.2225,0.197,Best NMI
+GMM full + temporal ctx=3,0.1425,0.211,0.193,Strong all-round
+Baseline GMM (no temporal),0.1049,0.1691,0.164,Reference
+Random baseline,0.0,0.0006,0.0,Calibration
