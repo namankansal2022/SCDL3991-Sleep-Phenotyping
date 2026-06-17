@@ -1,0 +1,6 @@
+method,uses_labels,ari,bal_acc,kappa
+Baseline (no resampling),No,0.1502,0.274,0.197
+Pseudo-SMOTE (GMM seed),No (pseudo),0.1463,0.262,0.211
+Pseudo-SMOTE (KMeans seed),No (pseudo),-0.0227,0.258,0.143
+Iterative pseudo-label (round 3),No (pseudo),-0.021,0.261,0.147
+"Oracle SMOTE (true labels, upper bound)",YES (oracle),0.1004,0.397,0.223
