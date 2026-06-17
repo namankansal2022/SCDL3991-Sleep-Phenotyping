@@ -1,0 +1,4 @@
+method,labels_pct,ari,ari_std,accuracy,acc_std,bal_acc,kappa,kappa_std
+RF 100% (subject-level CV),100,0.5598,0.0732,0.771,0.037,0.59,0.651,0.053
+LabelSpread 20% (subject-level CV),20,0.3938,0.0398,0.673,0.02,0.534,0.519,0.032
+LabelSpread 10% (subject-level CV),10,0.3785,0.0411,0.663,0.023,0.524,0.506,0.034
