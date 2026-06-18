@@ -1,4 +1,4 @@
-# SCDL3991 — Sleep Phenotyping via Multi-Modal Physiological Clustering
+# SCDL3991 — Data-Driven Phenotyping of Sleep Signals via Clustering
 
 **Researcher:** Naman Kansal
 
@@ -6,26 +6,83 @@
 
 **Institution:** School of Biomedical Engineering, The University of Sydney
 
-**Phase:** 2 — Multi-modal physiological signal analysis (in progress)
+**Status:** Complete — final research report submitted
 
 ---
 
 ## Project Overview
 
-This project applies unsupervised clustering to multi-modal physiological sleep data from the MESA (Multi-Ethnic Study of Atherosclerosis) Sleep Study, distributed via the National Sleep Research Resource (NSRR).
+This project investigates whether the five American Academy of Sleep Medicine
+(AASM) sleep stages can be recovered from multi-modal physiological signals
+**without expert labels**, using unsupervised clustering of polysomnography (PSG)
+from the MESA (Multi-Ethnic Study of Atherosclerosis) Sleep Study, distributed via
+the National Sleep Research Resource (NSRR).
 
-Phase 1 (separate repository) established a six-algorithm clustering baseline on a tabular sleep health dataset. Phase 2 extends this to real polysomnography signals, beginning with ECG and HRV features for the upcoming progress meeting, and laying infrastructure for later extension to EEG, EOG, EMG, SpO2, and respiration.
+The central finding is that **feature representation, not the choice of clustering
+algorithm, is the dominant factor** in unsupervised sleep staging. The work
+progresses along a "supervision ladder": from a heart-rate-variability baseline
+that recovers essentially no stage structure, through richer EEG representations
+that recover the stages without labels, to semi-supervised methods that use a small
+labelling budget.
 
 ### Research framing
 
-- Adapt the unsupervised clustering framework of Ma et al. (2026, *Sleep*) — which used EEG/EOG/EMG only — to physiological modalities they did not consider, beginning with ECG.
-- Add external clustering metrics (NMI, AMI, ARI, F-score) on top of internal ones, per supervisor feedback.
-- Begin developing a methodological contribution that goes beyond applying off-the-shelf algorithms.
+- Test whether the AASM five-stage paradigm emerges from unlabelled physiology,
+  building on the unsupervised clustering framework of Ma et al. (2026, *Sleep*).
+- Identify which feature representation and clustering algorithm maximise external
+  agreement with expert AASM labels.
+- Quantify the gain from temporal structure and a small labelling budget, and
+  rigorously test whether deep representation learning helps at this dataset scale.
 
-### Phase 1 reference
+### Project lineage
 
-Earlier work on the Sleep Health and Lifestyle dataset is archived at:
+Phase 1 (separate repository) established a six-algorithm clustering baseline on the
+tabular Sleep Health and Lifestyle dataset:
 https://github.com/namankansal2022/SCDL3991-Clustering-Analysis
+
+This repository (Phase 2) extends that pipeline to real PSG signals and contains the
+full final analysis and research report.
+
+---
+
+## Headline Results
+
+All results are on 100 MESA subjects (127,401 thirty-second epochs), evaluated
+against expert AASM labels. ARI = adjusted Rand index; metrics are calibrated
+against a random baseline (ARI ≈ 0.000).
+
+### The supervision ladder
+
+| Regime | Method (labels) | ARI | Accuracy | Cohen's κ |
+|---|---|---:|---:|---:|
+| Baseline | Random assignment | 0.000 | 20.0% | 0.000 |
+| Unsupervised | HRV + GMM (ECG only) | 0.025 | — | — |
+| Unsupervised | Band-power EEG + DBSCAN | 0.210 | 57.7% | 0.333 |
+| **Unsupervised** | **Rich EEG + DBSCAN** | **0.281** | **61.7%** | **0.395** |
+| Unsupervised | Rich EEG + per-subject HMM | 0.198 | 45.3% | 0.309 |
+| Semi-supervised | Self-training (10%) | 0.500 | 74.3% | 0.606 |
+| Semi-supervised | Label spreading (10%, subject-CV) | 0.38 ± 0.04 | 66.3 ± 2.3% | 0.51 ± 0.03 |
+| *(reference)* | *Supervised RF (subject-CV)* | *0.56 ± 0.07* | *77.1 ± 3.7%* | *0.65 ± 0.05* |
+
+### Key findings
+
+- **Representation dominates.** Replacing 15 band-power features with 39 rich
+  spectral features (spectral entropy, Hjorth parameters, spectral edge frequency,
+  etc.) raised unsupervised ARI from 0.21 to 0.28. Rich EEG alone outperformed rich
+  EEG combined with EMG/SpO₂/respiration.
+- **Temporal structure is the key unsupervised gain.** Adding temporal context
+  improved ARI from 0.14 to 0.21; a per-subject hidden Markov model achieved the
+  best minority-stage recovery (48.1% balanced accuracy).
+- **A small labelling budget is highly cost-effective.** 10% of labels closes
+  roughly half the gap between the unsupervised result and the supervised ceiling.
+- **Per-stage gradient.** REM (F1 = 0.80) and N1 (F1 = 0.68) are recovered best,
+  Wake (F1 = 0.14) worst, with ~40% of Wake epochs absorbed into N1.
+- **Deep learning did not help at this scale.** Feature autoencoders (ARI 0.14),
+  IDEC deep clustering (0.13), a raw-waveform 1D CNN (0.02) and consensus clustering
+  (0.07) all underperformed the classical pipeline — an informative negative result.
+
+The full analysis, figures and discussion are in the final report
+(`SCDL3991_report.tex`).
 
 ---
 
@@ -33,46 +90,29 @@ https://github.com/namankansal2022/SCDL3991-Clustering-Analysis
 
 | Folder / File | Description |
 |---|---|
+| `SCDL3991_report.tex` | Final research report (LaTeX, journal-article style) |
 | `notebooks/` | Jupyter notebooks, numbered by stage |
-| `src/` | Reusable Python modules |
-| `src/config.py` | Paths and constants (SSD data root, sampling rates, filter settings) |
-| `src/preprocessing.py` | ECG signal preprocessing pipeline (filter, R-peaks, epochs) |
-| `src/features.py` | HRV feature extraction (11 time/frequency/nonlinear features) |
-| `src/clustering.py` | Six clustering algorithms with uniform interface |
-| `src/evaluation.py` | Internal metrics (Silhouette, DB, CH) + external metrics (NMI, AMI, ARI, F-score) |
-| `src/plotting.py` | Reusable plotting functions (PCA, bar charts, heatmaps, boxplots) |
-| `data/tabular/` | Small Kaggle dataset for Phase 1 baseline rerun |
-| `results/` | Small CSVs of experimental results |
-| `figures/` | PNG/PDF outputs from analysis |
-| `docs/` | Project documentation (see below) |
-| `README.md` | This file |
-| `requirements.txt` | Python dependencies for reproducibility |
-| `.gitignore` | Files excluded from version control |
+| `src/` | Reusable Python modules (preprocessing, features, clustering, evaluation, plotting) |
+| `results/` | CSVs of experimental results across all phases |
+| `figures/report/` | Publication figures used in the final report |
+| `figures/github/` | Baseline figures (HRV/ECG analysis) |
+| `figures/` | Additional analysis outputs |
+| `docs/` | Project documentation (dataset reference, preprocessing plan, novelty directions) |
+| `build_report_assets.py` | Regenerates per-stage confusion matrix and PCA embedding |
+| `generate_report_figures.py` | Regenerates the report summary figures |
+| `make_kdistance_rich.py` | Regenerates the k-distance graph for the rich-feature space |
+| `requirements.txt` | Python dependencies |
 
-The MESA dataset itself lives on an external SSD (not in this repo), with paths configured in `src/config.py`.
-
----
-
-## Documentation
-
-The `docs/` folder contains the design and reference documents for the project:
-
-| Document | Description |
-|---|---|
-| `dataset_reference.md` | Full description of the MESA Sleep Study: 2,056 subjects, seven physiological modalities, file formats, annotations, NSRR pre-computed variables, citation requirements, and open questions |
-| `preprocessing_plan.md` | Specification of the ECG/HRV preprocessing pipeline, adapted from Ma et al. (2026), with explicit notes on what is adopted, what is deliberately changed (60 Hz notch for US data, ECG-specific bandpass), and what extends the original framework |
-| `novelty_directions.md` | Four candidate directions for a methodological contribution (multi-modal fusion, semi-supervised clustering, adaptive density peak clustering, deep representation learning). Discussion document for supervisor meeting |
+The MESA dataset itself lives on an external SSD (not in this repo); paths are
+configured in `src/config.py`. Large feature files (`.npz`) are gitignored.
 
 ---
 
 ## Setup
 
 ```bash
-# Create the conda environment
 conda create -n scdl3991-mesa python=3.11 -y
 conda activate scdl3991-mesa
-
-# Install dependencies
 pip install -r requirements.txt
 ```
 
@@ -80,159 +120,29 @@ pip install -r requirements.txt
 
 ## Data
 
-**Source:** MESA Sleep Study, distributed via the National Sleep Research Resource (NSRR) at https://sleepdata.org/datasets/mesa
+**Source:** MESA Sleep Study, via the National Sleep Research Resource (NSRR):
+https://sleepdata.org/datasets/mesa
 
-**Required citations** (when publishing or submitting work using this dataset):
-- Zhang GQ, Cui L, Mueller R, et al. (2018). The National Sleep Research Resource: towards a sleep data commons. *J Am Med Inform Assoc*, 25(10):1351-1358.
-- Chen X, Wang R, Zee P, et al. (2015). Racial/Ethnic Differences in Sleep Disturbances: The Multi-Ethnic Study of Atherosclerosis (MESA). *Sleep*, 38(6):877-88.
+**Required citations:**
+- Zhang GQ, Cui L, Mueller R, et al. (2018). The National Sleep Research Resource:
+  towards a sleep data commons. *J Am Med Inform Assoc*, 25(10):1351-1358.
+- Chen X, Wang R, Zee P, et al. (2015). Racial/Ethnic Differences in Sleep
+  Disturbances: The Multi-Ethnic Study of Atherosclerosis (MESA). *Sleep*,
+  38(6):877-88.
 
 Detailed dataset description: see `docs/dataset_reference.md`.
 
 ---
 
+## Methodological Note
 
-## MESA ECG/HRV Baseline Summary (May 2026)
-
-### Objective
-
-Validate the complete Phase 2 pipeline on one physiological modality (ECG) using
-heart rate variability (HRV) features extracted from the MESA Sleep dataset.
-
-### Dataset and Experimental Setup
-
-- Dataset: MESA Sleep Study (NSRR)
-- Modality: ECG only
-- Features: 7 time-domain HRV features
-- Subjects processed: 100
-- Total labelled epochs extracted: 97,756
-- Sleep stages: W, N1, N2, N3, REM
-- Clustering sample used for evaluation: 10,000 epochs
-
-### Methods
-
-Six baseline clustering algorithms were applied, including:
-
-1. K-Means
-2. Agglomerative (Hierarchical) Clustering
-3. DBSCAN
-4. Gaussian Mixture Models (GMM)
-5. Spectral Clustering
-6. Birch
-
-Evaluation included:
-
-- Internal metrics: Silhouette, Davies-Bouldin, Calinski-Harabasz
-- External metrics: ARI, AMI, NMI, Homogeneity, Completeness, V-measure, F-score
-
-### Key Results
-
-- K-Means achieved the strongest overall internal cluster quality.
-- All external agreement metrics (ARI, AMI, NMI) were close to zero.
-- Cross-tabulation showed that each cluster contained a mixture of sleep stages.
-- HRV features alone do not recover the five AASM sleep stages reliably.
-
-### Scientific Interpretation
-
-These findings are consistent with the sleep literature:
-
-- ECG/HRV captures broad autonomic changes across sleep.
-- HRV is useful for distinguishing sleep from wake and some REM/NREM differences.
-- HRV alone is insufficient for accurate five-stage sleep phenotyping.
-- EEG remains the most informative modality for fine-grained sleep staging.
-
-### Research Implication
-
-The weak correspondence between HRV-based clusters and AASM labels provides a
-clear justification for methodological innovation, particularly:
-
-- Multi-modal fusion (ECG + EEG + SpO₂ + respiration)
-- Semi-supervised clustering
-- Adaptive Density Peak Clustering
-- Deep representation learning
-
-### Repository Outputs
-
-Results:
-- `results/mesa_features.npz`
-- `results/mesa_ecg_metrics.csv`
-- `results/mesa_kmeans_crosstab.csv`
-
-Figures:
-- `figures/mesa_pca_ground_truth.png`
-- `figures/mesa_pca_kmeans.png`
-- `figures/mesa_external_metrics.png`
-- `figures/mesa_kmeans_crosstab.png`
-- `figures/mesa_feature_distributions.png`
-
-Supporting documentation:
-- `docs/novelty_directions.md`
-
-### Conclusion
-
-The complete ECG/HRV pipeline has been successfully validated on real MESA
-polysomnography data. The baseline analysis demonstrates that ECG-derived HRV
-features contain meaningful physiological structure, but are insufficient on
-their own to reproduce the five canonical sleep stages. This establishes a
-strong foundation for the next phase of the project, focused on developing
-novel multi-modal clustering methods.
-
-
-## Status
-
-- [x] Project scaffolding and environment setup
-- [x] Dataset reference document
-- [x] Preprocessing plan document
-- [x] Methodological novelty discussion document
-- [x] Module skeletons with function signatures and docstrings
-- [x] Clustering module implemented and tested (6 algorithms)
-- [x] Evaluation module implemented and tested (10 metrics)
-- [x] Plotting module implemented (5 reusable functions)
-- [x] Phase 1 baseline rerun with new external metrics (results in `results/`)
-- [x] MESA dataset acquired and configured on external SSD
-- [x] Preprocessing pipeline implemented and validated on 100 subjects
-- [x] HRV features extracted across 97,756 epochs
-- [x] Six clustering algorithms applied to MESA ECG/HRV features
-- [x] Cross-tabulation against AASM ground-truth sleep stages
-- [x] Results and figures generated and committed to GitHub
-- [ ] Methodological direction selected and prototyped
+This README summarises final results. The project deliberately progressed from a
+weak HRV baseline (ARI ≈ 0.025) to the rich-feature pipeline (ARI ≈ 0.28); the early
+HRV results are retained in the project history and report as the honest starting
+point that motivated the move to EEG-centred representations. The earlier modality
+ablation (which used band-power features and reported ARI ≈ 0.03) has been
+superseded by the rich-feature results above.
 
 ---
 
-*Last updated: May 2026*
-
-
-
-# Modality Ablation Summary
-
-## Best Performing Combinations
-
-| Metric | Best Combination | Score |
-|------:|------------------|------:|
-| ARI | EEG + EOG | 0.0342 |
-| NMI | EEG | 0.1143 |
-| F1 Score | EEG + EOG + EMG | 0.3621 |
-
-## Main Findings
-
-- EEG was the most informative single modality.
-- EOG provided complementary information and improved ARI.
-- EMG improved weighted F1.
-- HRV consistently reduced clustering performance.
-
-## Recommended Final Model
-
-EEG + EOG is the recommended modality combination for unsupervised sleep-stage clustering because it achieved the highest adjusted Rand index (ARI).
-
-## Detailed Ranked Results (Top 5 by ARI)
-
-| Rank | Combination | ARI | NMI | F1 |
-|-----:|-------------|----:|----:|----:|
-| 1 | EEG + EOG | 0.0342 | 0.1009 | 0.3412 |
-| 2 | EEG + EMG | 0.0249 | 0.0994 | 0.3502 |
-| 3 | EEG + EOG + EMG | 0.0243 | 0.0959 | 0.3621 |
-| 4 | EEG | 0.0227 | 0.1143 | 0.3211 |
-| 5 | EEG + HRV | 0.0220 | 0.0878 | 0.3305 |
-
-## Report Conclusion
-
-EEG was the strongest single modality, achieving the highest normalized mutual information. Adding EOG improved the adjusted Rand index and produced the best overall clustering agreement. EMG increased the weighted F1 score but did not improve ARI further. HRV consistently reduced performance. Therefore, EEG and EOG form the most effective modality combination for unsupervised sleep-stage clustering in this study.
+*Last updated: June 2026 — final report phase.*
